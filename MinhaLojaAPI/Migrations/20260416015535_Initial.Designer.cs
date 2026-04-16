@@ -11,7 +11,7 @@ using MinhaLojaAPI.Data;
 namespace MinhaLojaAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260410024549_Initial")]
+    [Migration("20260416015535_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -76,6 +76,32 @@ namespace MinhaLojaAPI.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("MinhaLojaAPI.Models.User", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("MinhaLojaAPI.Models.Image", b =>

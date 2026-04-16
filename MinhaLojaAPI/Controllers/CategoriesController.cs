@@ -1,34 +1,29 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using MinhaLojaAPI.Data;
-using MinhaLojaAPI.Models;
+using MinhaLojaAPI.DTOs;
+using MinhaLojaAPI.Services;
 
 namespace MinhaLojaAPI.Controllers
 {
-	[Route("api/[controller]")]
-	[ApiController]
-	public class CategoriesController : ControllerBase
+	public sealed class CategoriesController(ICategoryService categoryService) : MainController
 	{
-		private readonly AppDbContext _context;
-
-		public CategoriesController(AppDbContext context)
-		{
-			_context = context;
-		}
+		private readonly ICategoryService _categoryService = categoryService;
 
 		[HttpPost]
-		public async Task<ActionResult<Category>> Create(Category categoria)
+		[ProducesResponseType(typeof(CreateCategoryResponseDTO), StatusCodes.Status201Created)]
+		public async Task<ActionResult<CreateCategoryResponseDTO>> Create(CreateCategoryRequestDTO categoria)
 		{
-			_context.Categories.Add(categoria);
-			await _context.SaveChangesAsync();
+			var response = await _categoryService.Create(categoria);
 
-			return CreatedAtAction(nameof(GetAll), new { id = categoria.Id }, categoria);
+			return CreatedAtAction(nameof(GetAll), new { id = response.Id }, response);
 		}
 
 		[HttpGet]
-		public async Task<ActionResult<IEnumerable<Category>>> GetAll()
+		[ProducesResponseType(typeof(IEnumerable<CategoryResponseDTO>), StatusCodes.Status200OK)]
+		public async Task<ActionResult<IEnumerable<CategoryResponseDTO>>> GetAll()
 		{
-			return await _context.Categories.ToListAsync();
+			var response = await _categoryService.GetAll();
+
+			return Ok(response);
 		}
 	}
 }

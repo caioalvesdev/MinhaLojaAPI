@@ -1,44 +1,29 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using MinhaLojaAPI.Data;
-using MinhaLojaAPI.Models;
+using MinhaLojaAPI.DTOs;
+using MinhaLojaAPI.Services;
 
 namespace MinhaLojaAPI.Controllers
 {
-	[Route("api/[controller]")]
-	[ApiController]
-	public class ProductsController : ControllerBase
+	public sealed class ProductsController(IProductService productsService) : MainController
 	{
-		private readonly AppDbContext _context;
-
-		public ProductsController(AppDbContext context)
-		{
-			_context = context;
-		}
+		private readonly IProductService _productsService = productsService;
 
 		[HttpGet]
-		public async Task<ActionResult<IEnumerable<Product>>> GetAll(Guid? categoryId)
+		[ProducesResponseType(typeof(IEnumerable<ProductResponseDTO>), StatusCodes.Status200OK)]
+		public async Task<ActionResult<IEnumerable<ProductResponseDTO>>> GetAll([FromQuery] Guid? categoryId)
 		{
-			var query = _context.Products
-			.Include(p => p.Category)
-			.Include(p => p.Images)
-			.AsQueryable();
+			var response = await _productsService.GetAll(categoryId);
 
-			if (categoryId.HasValue)
-			{
-				query = query.Where(p => p.CategoryId == categoryId);
-			}
-
-			return await query.ToListAsync();
+			return Ok(response);
 		}
 
 		[HttpPost]
-		public async Task<ActionResult<Product>> Create(Product produto)
+		[ProducesResponseType(typeof(CreateProductResponseDTO), StatusCodes.Status201Created)]
+		public async Task<ActionResult<CreateProductResponseDTO>> Create([FromBody] CreateProductRequestDTO request)
 		{
-			_context.Products.Add(produto);
-			await _context.SaveChangesAsync();
+			var response = await _productsService.Create(request);
 
-			return CreatedAtAction(nameof(GetAll), new { id = produto.Id }, produto);
+			return CreatedAtAction(nameof(GetAll), new { id = response.Id }, response);
 		}
 	}
 }

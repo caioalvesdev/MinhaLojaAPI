@@ -3,15 +3,11 @@ using MinhaLojaAPI.Models;
 
 namespace MinhaLojaAPI.Data
 {
-	public class AppDbContext : DbContext
+	internal class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 	{
+		public DbSet<User> Users { get; set; }
 		public DbSet<Product> Products { get; set; }
 		public DbSet<Category> Categories { get; set; }
 		public DbSet<Image> Images { get; set; }
-
-		public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
-		{
-		}
-
 	}
 }

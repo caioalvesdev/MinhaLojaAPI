@@ -1,13 +1,12 @@
 ﻿namespace MinhaLojaAPI.Models
 {
-	public class Product
+	internal sealed class Product
 	{
-		public Guid Id { get; set; } = Guid.NewGuid();
-		public string Name { get; set; } = string.Empty;
-		public decimal Price { get; set; }
-
-		public Guid CategoryId { get; set; }
-		public Category? Category { get; set; }
-		public List<Image> Images { get; set; } = new List<Image>();
+		public Guid Id { get; init; } = Guid.NewGuid();
+		public string Name { get; init; } = string.Empty;
+		public decimal Price { get; init; }
+		public Guid CategoryId { get; init; }
+		public Category Category { get; init; } = new();
+		public List<Image> Images { get; init; } = [];
 	}
 }
