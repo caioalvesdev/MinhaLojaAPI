@@ -25,7 +25,16 @@ jobs:
           cache: true
           cache-dependency-path: '**/*.csproj'
 
-      - name: Build
+      - name: Build .Net
         run: |
           dotnet restore 
           dotnet build --configuration Release
+
+        - name: Run tests
+          run: |
+            dotnet test --configuration Release --no-build --verbosity normal --results-directory ./test-results --logger "trx;LogFileName=test_results.trx"
+
+        - name: Upload test results
+          uses: actions/upload-artifact@v3
+          with:
+            name: test-results
