@@ -23,7 +23,7 @@ jobs:
         with:
           dotnet-version: 10.0.x
           cache: true
-          cache-dependency-path: '**/obj/project.assets.json'
+          cache-dependency-path: '**/*.csproj'
 
       - name: Build
         run: |
