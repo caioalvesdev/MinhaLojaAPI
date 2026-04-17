@@ -17,6 +17,7 @@ namespace MinhaLojaAPI.Controllers
 		public async Task<ActionResult<LoginResponseDTO>> Login([FromBody] LoginRequestDTO request)
 		{
 			var response = await _authService.Login(request);
+
 			return Ok(response);
 		}
 	}
