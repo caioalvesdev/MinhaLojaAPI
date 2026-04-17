@@ -3,8 +3,10 @@
 on:
   push:
     branches: [ master ]
+
   pull_request:
     branches: [ master ]
+
   workflow_dispatch:
 
 jobs:
@@ -20,6 +22,8 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 10.0.x
+          cache: true
+          cache-dependency-path: '**/obj/project.assets.json'
 
       - name: Build
         run: |
