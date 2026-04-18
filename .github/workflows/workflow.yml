@@ -10,6 +10,22 @@ on:
   workflow_dispatch:
 
 jobs:
+  versionamento:
+    runs-on: ubuntu-latest
+    name: Versionamento
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: {{ github.head_ref }}
+          fetch-depth: 0
+
+      - uses: codacy/git-version@2.8.0
+        with:
+          release-branch: 'master'
+          prefix: v
+
   build:
     runs-on: ubuntu-latest
     name: Build Project
@@ -29,13 +45,3 @@ jobs:
         run: |
           dotnet restore 
           dotnet build --configuration Release
-
-      - name: Run tests
-        run: |
-          dotnet test --configuration Release --no-build --verbosity normal --results-directory ./test-results --logger "trx;LogFileName=test_results.trx"
-
-      - name: Upload test results
-        uses: actions/upload-artifact@v7
-        with:
-          name: test-results
-          path: test-results
