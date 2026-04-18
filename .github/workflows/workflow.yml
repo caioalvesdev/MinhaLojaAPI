@@ -2,11 +2,42 @@
 
 on:
   push:
-    branches: [ main ]
-    pull_request:
-      branches: [ main ]
+    branches: [ master ]
+
+  pull_request:
+    branches: [ master ]
+
+  workflow_dispatch:
 
 jobs:
+  versionamento:
+    runs-on: ubuntu-latest
+    name: Versionamento
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+
+      - uses: codacy/git-version@2.8.0
+        id: version
+        with:
+          release-branch: 'master'
+          prefix: v
+
+      - name: Tag the repository
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "::notice:: ${{ steps.version.outputs.version }}"
+          git config --global user.email "${{ github.actor }}"@users.noreply.github.com"
+          git config --global user.name "${{ github.actor }}"
+          git tag -a ${{ steps.version.outputs.version }} -m "Release ${{ steps.version.outputs.version }}"
+          git push --tags
+        if: github.ref == 'refs/heads/master'
+
   build:
     runs-on: ubuntu-latest
     name: Build Project
@@ -19,8 +50,10 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 10.0.x
+          cache: true
+          cache-dependency-path: '**/*.csproj'
 
-      - name: Build
+      - name: Build .Net
         run: |
           dotnet restore 
           dotnet build --configuration Release
