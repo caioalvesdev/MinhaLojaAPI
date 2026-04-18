@@ -35,7 +35,7 @@ jobs:
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
           git config --global user.name "${{ github.actor }}"
           git tag -a ${{ steps.version.outputs.version }} -m "Release ${{ steps.version.outputs.version }}"
-          git push --tags
+          git push https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git --tags
         if: github.ref == 'refs/heads/master'
 
   build:
