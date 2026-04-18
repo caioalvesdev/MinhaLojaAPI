@@ -10,7 +10,6 @@ Este projeto foi desenvolvido para servir como:
 - Referência prática - boas práticas em desenvolvimento backend com .NET
 
 ## Tecnologias
-
 - .NET 10
 - C# 14.0
 - Entity Framework Core - ORM para banco de dados
